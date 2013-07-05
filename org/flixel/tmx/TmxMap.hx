@@ -24,6 +24,7 @@ class TmxMap
 	public var tilesets     : Map<String, TmxTileSet>;
 	public var layers       : Map<String, TmxLayer>;
 	public var objectGroups : Map<String, TmxObjectGroup>;
+	public var orderedLayers: Array<TmxLayer>;
 
     public function new(data: Dynamic)
     {
@@ -39,6 +40,7 @@ class TmxMap
 		tilesets = new Map<String, TmxTileSet>();
 		layers = new Map<String, TmxLayer>();
 		objectGroups = new Map<String, TmxObjectGroup>();
+		orderedLayers = new Array<TmxLayer>();
 		
 		source = source.node.map;
 		
@@ -67,7 +69,11 @@ class TmxMap
 		
 		//load layer
 		for (node in source.nodes.layer)
-			layers.set(node.att.name, new TmxLayer(node, this));
+		{
+			var layer = new TmxLayer(node, this);
+			layers.set(node.att.name, layer);
+			orderedLayers.push(layer);
+		}
 		
 		//load object group
 		for (node in source.nodes.objectgroup)
