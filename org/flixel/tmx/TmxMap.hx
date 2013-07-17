@@ -71,10 +71,14 @@ class TmxMap
         {
             if(node.has.source)
             {
+                #if openfl
                 // load external tileset
                 var path = relativePath(node.att.source);
                 var tileset = new TmxTileSet(openfl.Assets.getText(path));
                 tilesets.set(tileset.name, tileset);
+                #else
+                throw "External tile sets not supported";
+                #end
             }
             else
             {
