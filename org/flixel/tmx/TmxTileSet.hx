@@ -33,13 +33,13 @@ class TmxTileSet
 		var node:Fast, source:Fast;
 		numTiles = 0xFFFFFF;
 		numRows = numCols = 1;
-		
+
 		// Use the correct data format
 		if (Std.is(data, Fast))
 		{
 			source = data;
 		}
-		else if (Std.is(data, ByteArray))
+		else if (Std.is(data, ByteArray) || Std.is(data, String))
 		{
 			source = new Fast(Xml.parse(data.toString()));
 			source = source.node.tileset;
@@ -51,7 +51,7 @@ class TmxTileSet
 		// check for external source
 		if (source.has.source)
 		{
-			
+            throw "External tileset should be handled in TmxMap";
 		}
 		else // internal
 		{

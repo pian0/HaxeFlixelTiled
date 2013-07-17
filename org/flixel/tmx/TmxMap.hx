@@ -25,8 +25,13 @@ class TmxMap
 	public var layers       : Map<String, TmxLayer>;
 	public var objectGroups : Map<String, TmxObjectGroup>;
 
-    public function new(data: Dynamic)
+    // path to the source file, split into components. Might be null
+    public var sourcePath   : Array<String>;
+
+    public function new(data: Dynamic, path : String = null)
     {
+        sourcePath = ((path != null) ? path.split("/") : null);
+
         properties = new TmxPropertySet();
 		var source:Fast = null;
 		var node:Fast = null;
@@ -63,7 +68,19 @@ class TmxMap
 		
 		//load tilesets
 		for (node in source.nodes.tileset)
-			tilesets.set(node.att.name, new TmxTileSet(node));
+        {
+            if(node.has.source)
+            {
+                // load external tileset
+                var path = relativePath(node.att.source);
+                var tileset = new TmxTileSet(openfl.Assets.getText(path));
+                tilesets.set(tileset.name, tileset);
+            }
+            else
+            {
+                tilesets.set(node.att.name, new TmxTileSet(node));
+            }
+        }
 		
 		//load layer
 		for (node in source.nodes.layer)
@@ -102,4 +119,29 @@ class TmxMap
 		return null;
 	}
 
+    // resolve a path relative to the source path
+    public function relativePath(path : String) : String
+    {
+        if(sourcePath != null)
+        {
+            var parts = path.split("/");
+
+            // components to trim off the end of sourcePath
+            var trim = 1;
+
+            while(parts.length > 0 && parts[0] == "..")
+            {
+                trim++;
+                parts.shift();
+            }
+
+            var out = sourcePath.slice(0, -trim);
+            out = out.concat(parts);
+            return out.join("/");
+        }
+        else
+        {
+            return null;
+        }
+    }
 }
