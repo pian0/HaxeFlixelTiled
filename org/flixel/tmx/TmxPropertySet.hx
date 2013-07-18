@@ -5,19 +5,15 @@
  ******************************************************************************/
 package org.flixel.tmx;
 
+import haxe.ds.StringMap;
 import haxe.xml.Fast;
 
-class TmxPropertySet implements Dynamic<String>
+class TmxPropertySet extends StringMap<String>
 {
 	
 	public function new()
 	{
-		keys = new Map<String, String>();
-	}
-	
-	public function resolve(name:String):String
-	{
-		return keys.get(name);
+        super();
 	}
 	
 	public function extend(source:Fast)
@@ -25,9 +21,7 @@ class TmxPropertySet implements Dynamic<String>
 		var prop:Fast;
 		for (prop in source.nodes.property)
 		{
-			keys.set(prop.att.name, prop.att.value);
+			set(prop.att.name, prop.att.value);
 		}
 	}
-	
-	private var keys:Map<String, String>;
 }
