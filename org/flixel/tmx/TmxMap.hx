@@ -75,6 +75,7 @@ class TmxMap
                 // load external tileset
                 var path = relativePath(node.att.source);
                 var tileset = new TmxTileSet(openfl.Assets.getText(path));
+                tileset.firstGID = (node.has.firstgid) ? Std.parseInt(node.att.firstgid) : 1;
                 tilesets.set(tileset.name, tileset);
                 #else
                 throw "External tile sets not supported";
